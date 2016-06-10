@@ -311,6 +311,8 @@ struct module_layout {
 	unsigned int text_size;
 	/* Size of RO section of the module (text+rodata) */
 	unsigned int ro_size;
+	/* Size of RO after init section */
+	unsigned int ro_after_init_size;
 
 #ifdef CONFIG_MODULES_TREE_LOOKUP
 	struct mod_tree_node mtn;
