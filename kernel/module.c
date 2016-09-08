@@ -1137,25 +1137,16 @@ static inline int module_unload_init(struct module *mod)
 
 static size_t module_flags_taint(struct module *mod, char *buf)
 {
+	const struct taint *t;
 	size_t l = 0;
+	int i;
 
-	if (mod->taints & (1 << TAINT_PROPRIETARY_MODULE))
-		buf[l++] = 'P';
-	if (mod->taints & (1 << TAINT_OOT_MODULE))
-		buf[l++] = 'O';
-	if (mod->taints & (1 << TAINT_FORCED_MODULE))
-		buf[l++] = 'F';
-	if (mod->taints & (1 << TAINT_CRAP))
-		buf[l++] = 'C';
-	if (mod->taints & (1 << TAINT_UNSIGNED_MODULE))
-		buf[l++] = 'E';
-	if (mod->taints & (1 << TAINT_LIVEPATCH))
-		buf[l++] = 'K';
-	/*
-	 * TAINT_FORCED_RMMOD: could be added.
-	 * TAINT_CPU_OUT_OF_SPEC, TAINT_MACHINE_CHECK, TAINT_BAD_PAGE don't
-	 * apply to modules.
-	 */
+	for (i = 0; i < ARRAY_SIZE(taint_flags); i++) {
+		t = &taint_flags[i];
+		if (mod->taints & (1 << t->bit))
+			buf[l++] = t->true;
+	}
+
 	return l;
 }
 

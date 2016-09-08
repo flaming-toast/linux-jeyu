@@ -298,30 +298,23 @@ void panic(const char *fmt, ...)
 
 EXPORT_SYMBOL(panic);
 
-
-struct tnt {
-	u8	bit;
-	char	true;
-	char	false;
-};
-
-static const struct tnt tnts[] = {
-	{ TAINT_PROPRIETARY_MODULE,	'P', 'G' },
-	{ TAINT_FORCED_MODULE,		'F', ' ' },
-	{ TAINT_CPU_OUT_OF_SPEC,	'S', ' ' },
-	{ TAINT_FORCED_RMMOD,		'R', ' ' },
-	{ TAINT_MACHINE_CHECK,		'M', ' ' },
-	{ TAINT_BAD_PAGE,		'B', ' ' },
-	{ TAINT_USER,			'U', ' ' },
-	{ TAINT_DIE,			'D', ' ' },
-	{ TAINT_OVERRIDDEN_ACPI_TABLE,	'A', ' ' },
-	{ TAINT_WARN,			'W', ' ' },
-	{ TAINT_CRAP,			'C', ' ' },
-	{ TAINT_FIRMWARE_WORKAROUND,	'I', ' ' },
-	{ TAINT_OOT_MODULE,		'O', ' ' },
-	{ TAINT_UNSIGNED_MODULE,	'E', ' ' },
-	{ TAINT_SOFTLOCKUP,		'L', ' ' },
-	{ TAINT_LIVEPATCH,		'K', ' ' },
+const struct taint taint_flags[TAINT_FLAGS_COUNT] = {
+	{ TAINT_PROPRIETARY_MODULE,    'P', 'G' },
+	{ TAINT_FORCED_MODULE,         'F', ' ' },
+	{ TAINT_CPU_OUT_OF_SPEC,       'S', ' ' },
+	{ TAINT_FORCED_RMMOD,          'R', ' ' },
+	{ TAINT_MACHINE_CHECK,         'M', ' ' },
+	{ TAINT_BAD_PAGE,              'B', ' ' },
+	{ TAINT_USER,                  'U', ' ' },
+	{ TAINT_DIE,                   'D', ' ' },
+	{ TAINT_OVERRIDDEN_ACPI_TABLE, 'A', ' ' },
+	{ TAINT_WARN,                  'W', ' ' },
+	{ TAINT_CRAP,                  'C', ' ' },
+	{ TAINT_FIRMWARE_WORKAROUND,   'I', ' ' },
+	{ TAINT_OOT_MODULE,            'O', ' ' },
+	{ TAINT_UNSIGNED_MODULE,       'E', ' ' },
+	{ TAINT_SOFTLOCKUP,            'L', ' ' },
+	{ TAINT_LIVEPATCH,             'K', ' ' },
 };
 
 /**
@@ -348,15 +341,15 @@ static const struct tnt tnts[] = {
  */
 const char *print_tainted(void)
 {
-	static char buf[ARRAY_SIZE(tnts) + sizeof("Tainted: ")];
+	static char buf[ARRAY_SIZE(taint_flags) + sizeof("Tainted: ")];
 
 	if (tainted_mask) {
 		char *s;
 		int i;
 
 		s = buf + sprintf(buf, "Tainted: ");
-		for (i = 0; i < ARRAY_SIZE(tnts); i++) {
-			const struct tnt *t = &tnts[i];
+		for (i = 0; i < ARRAY_SIZE(taint_flags); i++) {
+			const struct taint *t = &taint_flags[i];
 			*s++ = test_bit(t->bit, &tainted_mask) ?
 					t->true : t->false;
 		}
